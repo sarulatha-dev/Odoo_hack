@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: subscription-system
+  datasource:
+    url: jdbc:h2:file:./data/brightloop
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:2525}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${MAIL_AUTH:false}
+      mail.smtp.starttls.enable: ${MAIL_TLS:false}
+
+server:
+  port: 8080
+  error:
+    include-message: always
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:brightloop-dev-secret-change-me-in-production-0123456789}
+    expiration-minutes: 720
+  company:
+    name: Brightloop Software
+    state: Karnataka
+    gstin: 29ABCDE1234F1Z5
+    currency: INR
+  mail:
+    from: no-reply@brightloop.test
+    enabled: ${MAIL_ENABLED:false}
+  gateway:
+    razorpay:
+      key-id: ${RAZORPAY_KEY_ID:}
+      key-secret: ${RAZORPAY_KEY_SECRET:}
+  billing:
+    cron: "0 0 2 * * *"
+  metrics:
+    underperforming-churn-threshold: 0.20
+  seed:
+    enabled: ${SEED_ENABLED:true}
+    demo:
+      enabled: ${DEMO_SEED_ENABLED:true}
+      customers: ${DEMO_SEED_CUSTOMERS:250}
+      subscriptions: ${DEMO_SEED_SUBSCRIPTIONS:2000}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+
+logging:
+  level:
+    com.brightloop.subscription: INFO

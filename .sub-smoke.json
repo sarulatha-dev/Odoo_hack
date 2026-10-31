@@ -1,0 +1,36 @@
+﻿{
+    "id":  1,
+    "number":  "SUB-0001",
+    "customerId":  35,
+    "customerName":  "Demo Customer",
+    "planId":  1,
+    "planName":  "Medium Plan",
+    "startDate":  "2026-10-31",
+    "expiryDate":  "2026-11-30",
+    "paymentTermsDays":  15,
+    "status":  "ACTIVE",
+    "nextBillingDate":  "2026-10-31",
+    "currency":  "INR",
+    "subtotal":  1560.00,
+    "allowedActions":  [
+                           "close",
+                           "pause",
+                           "renew"
+                       ],
+    "lines":  [
+                  {
+                      "id":  1,
+                      "productId":  1,
+                      "productName":  "Odoo License",
+                      "variantId":  1,
+                      "variantLabel":  "Brand: Odoo",
+                      "qty":  1,
+                      "unitPrice":  1560.00,
+                      "taxId":  null,
+                      "taxPercent":  null,
+                      "amount":  1560.00,
+                      "hsnSacCode":  "9983"
+                  }
+              ],
+    "createdAt":  "2026-10-31T05:33:53.001467Z"
+}
