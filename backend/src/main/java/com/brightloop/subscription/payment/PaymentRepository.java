@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,30 @@ import com.brightloop.subscription.billing.InvoiceStatus;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByInvoiceIdOrderByPaidOnDesc(Long invoiceId);
+
+    List<Payment> findTop5ByInvoiceCustomerIdOrderByPaidOnDesc(Long customerId);
+
+    @Query(value = """
+            select p from Payment p
+            join fetch p.invoice i
+            join fetch i.customer c
+            where (:from is null or p.paidOn >= :from)
+              and (:to is null or p.paidOn <= :to)
+              and (:customerId is null or c.id = :customerId)
+              and (:currency is null or i.currency = :currency)
+            """,
+            countQuery = """
+            select count(p) from Payment p
+            where (:from is null or p.paidOn >= :from)
+              and (:to is null or p.paidOn <= :to)
+              and (:customerId is null or p.invoice.customer.id = :customerId)
+              and (:currency is null or p.invoice.currency = :currency)
+            """)
+    Page<Payment> search(@Param("from") LocalDate from,
+            @Param("to") LocalDate to,
+            @Param("customerId") Long customerId,
+            @Param("currency") String currency,
+            Pageable pageable);
 
     boolean existsByGatewayRef(String gatewayRef);
 

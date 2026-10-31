@@ -41,6 +41,36 @@ public class User {
     @Column(name = "full_name", length = 120)
     private String fullName;
 
+    @Column(name = "company_name", length = 160)
+    private String companyName;
+
+    @Column(length = 30)
+    private String phone;
+
+    @Column(length = 60)
+    private String country;
+
+    @Column(name = "customer_type", length = 20)
+    private String customerType;
+
+    @Column(name = "billing_address", length = 255)
+    private String billingAddress;
+
+    @Column(length = 80)
+    private String city;
+
+    @Column(name = "postal_code", length = 20)
+    private String postalCode;
+
+    @Column(name = "billing_country", length = 60)
+    private String billingCountry;
+
+    @Column(name = "tax_registration_type", length = 30)
+    private String taxRegistrationType;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;

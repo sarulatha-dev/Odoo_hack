@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import com.brightloop.subscription.billing.InvoiceService;
 import com.brightloop.subscription.billing.InvoiceStatus;
 import com.brightloop.subscription.billing.dto.InvoiceResponse;
 import com.brightloop.subscription.common.ApiException;
+import com.brightloop.subscription.common.PageResponse;
 import com.brightloop.subscription.notification.NotificationService;
 import com.brightloop.subscription.payment.dto.GatewayOrderResponse;
 import com.brightloop.subscription.payment.dto.GatewayVerifyRequest;
@@ -65,6 +68,14 @@ public class PaymentService {
         return paymentRepository.findByInvoiceIdOrderByPaidOnDesc(invoice.getId()).stream()
                 .map(PaymentResponse::from)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<PaymentResponse> listAll(LocalDate from, LocalDate to, Long customerId,
+            String currency, Pageable pageable) {
+        String normalized = currency == null || currency.isBlank() ? null : currency.trim().toUpperCase();
+        Page<Payment> page = paymentRepository.search(from, to, customerId, normalized, pageable);
+        return PageResponse.from(page, PaymentResponse::from);
     }
 
     @Transactional(readOnly = true)

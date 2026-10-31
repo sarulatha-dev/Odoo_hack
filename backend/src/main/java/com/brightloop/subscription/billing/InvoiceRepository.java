@@ -17,6 +17,34 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     boolean existsBySubscriptionIdAndBillingPeriodStart(Long subscriptionId, LocalDate billingPeriodStart);
 
+    boolean existsByCustomerId(Long customerId);
+
+    List<Invoice> findTop5ByCustomerIdOrderByIssueDateDesc(Long customerId);
+
+    @Query("""
+            select coalesce(sum(i.totalInBase), 0) from Invoice i
+            where i.customer.id = :customerId
+              and i.status <> com.brightloop.subscription.billing.InvoiceStatus.CANCELLED
+            """)
+    BigDecimal sumInvoicedInBaseByCustomer(@Param("customerId") Long customerId);
+
+    @Query("""
+            select coalesce(sum(i.totalInBase), 0) from Invoice i
+            where i.customer.id = :customerId
+              and i.status not in (com.brightloop.subscription.billing.InvoiceStatus.CANCELLED,
+                                   com.brightloop.subscription.billing.InvoiceStatus.PAID)
+            """)
+    BigDecimal sumOutstandingInBaseByCustomer(@Param("customerId") Long customerId);
+
+    @Query("""
+            select coalesce(sum(i.totalInBase), 0) from Invoice i
+            where i.customer.id = :customerId
+              and i.status not in (com.brightloop.subscription.billing.InvoiceStatus.CANCELLED,
+                                   com.brightloop.subscription.billing.InvoiceStatus.PAID)
+              and i.dueDate < :today
+            """)
+    BigDecimal sumOverdueInBaseByCustomer(@Param("customerId") Long customerId, @Param("today") LocalDate today);
+
     List<Invoice> findByStatusAndDueDateBefore(InvoiceStatus status, LocalDate date);
 
     List<Invoice> findByStatus(InvoiceStatus status);

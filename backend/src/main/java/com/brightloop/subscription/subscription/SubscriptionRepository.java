@@ -24,6 +24,20 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     long countByStatus(SubscriptionStatus status);
 
+    long countByCustomerId(Long customerId);
+
+    long countByCustomerIdAndStatus(Long customerId, SubscriptionStatus status);
+
+    List<Subscription> findTop5ByCustomerIdOrderByCreatedAtDesc(Long customerId);
+
+    @Query("""
+            select distinct p.name from Subscription s
+            join s.plan p
+            where s.customer.id = :customerId
+            order by p.name
+            """)
+    List<String> findDistinctPlanNamesByCustomerId(@Param("customerId") Long customerId);
+
     long countByPlanIdAndStatus(Long planId, SubscriptionStatus status);
 
     long countByPlanId(Long planId);
